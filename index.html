@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ООО «БелКейс» — модификация баз данных, обработка голосовых и текстовых заявок. Актуальные вакансии.">
+  <meta name="theme-color" content="#0b2a55">
+  <title>ООО «БелКейс» — решения для обработки данных</title>
+  <style>
+    :root {
+      --navy: #09264f;
+      --blue: #1269ad;
+      --cyan: #19b6d5;
+      --pale: #eaf7fc;
+      --ink: #172b45;
+      --muted: #64748b;
+      --white: #fff;
+      --shadow: 0 16px 45px rgba(8, 43, 82, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink);
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      background: #f7fbfe; line-height: 1.7; font-size: 17px;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255,255,255,.94); backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e5edf5;
+    }
+    .nav { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; color: var(--navy); }
+    .brand img { width: 66px; height: 66px; object-fit: contain; }
+    .brand span { font-size: 21px; letter-spacing: -.4px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; font-size: 16px; font-weight: 650; color: #40536c; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-phone { color: var(--blue); font-weight: 800; white-space: nowrap; }
+    .hero {
+      overflow: hidden; position: relative; padding: 88px 0 92px;
+      background: linear-gradient(120deg, #08234b 0%, #105b9a 58%, #16b4d3 100%);
+      color: white;
+    }
+    .hero:before, .hero:after {
+      content: ""; position: absolute; border: 1px solid rgba(255,255,255,.13);
+      border-radius: 50%; pointer-events: none;
+    }
+    .hero:before { width: 520px; height: 520px; right: -130px; top: -290px; }
+    .hero:after { width: 390px; height: 390px; right: -40px; bottom: -290px; }
+    .hero-content { position: relative; z-index: 1; max-width: 760px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 750; letter-spacing: 1.4px; text-transform: uppercase; color: #bcefff; }
+    .eyebrow:before { content: ""; width: 26px; height: 2px; background: var(--cyan); }
+    h1 { margin: 20px 0 18px; max-width: 760px; font-size: clamp(38px, 6vw, 66px); line-height: 1.08; letter-spacing: -2px; }
+    .hero p { max-width: 700px; margin: 0; color: #e1f3ff; font-size: clamp(18px, 2.2vw, 21px); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 9px; font-weight: 750; transition: .2s; }
+    .btn-primary { color: var(--navy); background: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 22px #001c3d55; }
+    .btn-outline { border: 1px solid #bcefff99; color: white; }
+    .btn-outline:hover { background: #ffffff18; }
+    section { padding: 78px 0; }
+    .section-head { max-width: 690px; margin-bottom: 34px; }
+    .section-kicker { color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+    h2 { margin: 8px 0 12px; color: var(--navy); font-size: clamp(29px, 4vw, 42px); line-height: 1.18; letter-spacing: -1px; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 18px; }
+    .about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 46px; align-items: center; }
+    .about-copy p { color: #52647a; margin: 0 0 18px; font-size: 18px; }
+    .feature-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .feature { background: white; border: 1px solid #e6eef5; border-radius: 14px; padding: 20px; box-shadow: 0 8px 24px #0b31520a; }
+    .feature-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; color: var(--blue); background: var(--pale); font-size: 19px; font-weight: 800; }
+    .feature h3 { margin: 13px 0 5px; font-size: 18px; color: var(--navy); }
+    .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+
+    /* ---------- ВАКАНСИИ: ГОРИЗОНТАЛЬНЫЙ СПИСОК ---------- */
+    .vacancies { background: #edf7fc; }
+    .vacancy-list { display: flex; flex-direction: column; gap: 18px; }
+
+    .vacancy {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 28px;
+      align-items: center;
+      background: white;
+      border: 1px solid #e0edf5;
+      border-radius: 17px;
+      padding: 26px 30px;
+      box-shadow: var(--shadow);
+    }
+    .vacancy-main { min-width: 0; }
+
+    .vacancy-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .vacancy h3 { margin: 0; color: var(--navy); font-size: 22px; line-height: 1.25; }
+    .tag { flex-shrink: 0; border-radius: 30px; padding: 4px 10px; color: #087c9c; background: #e2f8fc; font-size: 11px; font-weight: 800; }
+
+    .salary-row { display: flex; align-items: baseline; gap: 10px; margin: 10px 0 0; }
+    .salary { color: var(--blue); font-size: 21px; font-weight: 850; }
+    .salary-note { color: var(--muted); font-size: 12px; }
+
+    .vacancy-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 34px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #edf1f5;
+    }
+    .vacancy-cols h4 { margin: 0 0 6px; color: var(--navy); font-size: 15px; }
+    .vacancy-cols ul { padding-left: 18px; margin: 0; color: #596b80; font-size: 14px; }
+    .vacancy-cols li { margin: 4px 0; }
+
+    .vacancy-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+    .vacancy-meta span { border-radius: 7px; background: #f2f7fa; padding: 5px 9px; color: #52647a; font-size: 11px; font-weight: 650; }
+
+    .vacancy-aside { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+    .vacancy-aside .btn {
+      width: 100%;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      background: linear-gradient(100deg, var(--blue), var(--cyan));
+      color: white;
+    }
+    .vacancy-aside .btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+
+    .contact { background: white; }
+    .contact-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 34px; }
+    .contact-panel { background: linear-gradient(145deg, #09264f, #1169a8); color: white; border-radius: 18px; padding: 30px; }
+    .contact-panel h3 { margin: 0 0 10px; font-size: 23px; }
+    .contact-panel p { margin: 0; color: #d6edfb; font-size: 14px; }
+    .contact-panel .btn { margin-top: 24px; background: white; color: var(--navy); }
+    .details { display: grid; gap: 18px; padding: 8px 0; }
+    .detail { display: grid; grid-template-columns: 42px 1fr; gap: 13px; align-items: start; }
+    .detail-icon { width: 40px; height: 40px; display: grid; place-items: center; background: var(--pale); color: var(--blue); border-radius: 10px; font-weight: 800; }
+    .detail strong { display: block; margin: 0 0 3px; color: var(--navy); font-size: 14px; }
+    .detail span, .detail a { color: #607187; font-size: 16px; overflow-wrap: anywhere; }
+    .detail a:hover { color: var(--blue); }
+    footer { background: #071d3b; color: #b9c9da; padding: 24px 0; font-size: 12px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+    .footer-inner strong { color: white; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+      background: rgba(3, 18, 39, .68); backdrop-filter: blur(5px);
+    }
+    .modal-overlay.is-open { display: flex; }
+    .modal {
+      position: relative; width: min(100%, 490px); padding: 36px 30px 30px;
+      border-radius: 20px; background: white; text-align: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,.28);
+      animation: modalIn .22s ease-out;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-mark {
+      width: 58px; height: 58px; display: grid; place-items: center;
+      margin: 0 auto 17px; border-radius: 17px;
+      color: white; background: linear-gradient(135deg, var(--blue), var(--cyan));
+      font-size: 27px; font-weight: 900;
+    }
+    .modal h2 { margin: 0 0 12px; font-size: 27px; }
+    .modal p { margin: 0 0 18px; color: #607187; font-size: 17px; }
+    .modal-phone {
+      display: inline-block; margin: 0 0 22px; color: var(--blue);
+      font-size: 25px; font-weight: 900; letter-spacing: .3px;
+    }
+    .modal-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .modal-actions .btn { border: 0; cursor: pointer; font: inherit; font-weight: 800; }
+    .modal-call { color: white; background: linear-gradient(100deg, var(--blue), var(--cyan)); }
+    .modal-close { color: var(--navy); background: #edf4f8; }
+    .modal-x {
+      position: absolute; top: 12px; right: 14px; width: 36px; height: 36px;
+      border: 0; border-radius: 50%; background: #f0f5f8; color: #52647a;
+      font-size: 23px; cursor: pointer;
+    }
+    body.modal-open { overflow: hidden; }
+
+    @media (max-width: 860px) {
+      .vacancy { grid-template-columns: 1fr; gap: 18px; }
+      .vacancy-cols { grid-template-columns: 1fr; }
+      .vacancy-aside { flex-direction: row; }
+      .vacancy-aside .btn { width: auto; flex: 1; }
+    }
+    @media (max-width: 760px) {
+      .nav { min-height: 70px; }
+      .brand img { width: 54px; height: 54px; }
+      .nav-links { display: none; }
+      .hero { padding: 68px 0 72px; }
+      section { padding: 60px 0; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .feature-list { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 430px) {
+      .container { width: min(100% - 28px, 1120px); }
+      .brand span { font-size: 16px; }
+      .nav-phone { font-size: 13px; }
+      .feature-list { grid-template-columns: 1fr; }
+      .vacancy { padding: 22px; }
+      .vacancy-aside { flex-direction: column; }
+      .vacancy-aside .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="#top" aria-label="БелКейс — главная">
+      <img src="logo.png" alt="Логотип БелКейс — добавьте свой файл logo.png">
+      <span>ООО «БелКейс»</span>
+    </a>
+    <nav class="nav-links" aria-label="Основная навигация">
+      <a href="#about">О компании</a>
+      <a href="#vacancies">Вакансии</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="nav-phone" href="tel:+375297704363">+375 29 770-43-63</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="eyebrow">ООО «БелКейс»</div>
+        <h1>Данные. Общение. Точные решения.</h1>
+        <p>Модификация баз данных и профессиональная обработка входящих голосовых и текстовых заявок.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#vacancies">Смотреть вакансии</a>
+          <a class="btn btn-outline" href="#contacts">Связаться с нами</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container about-grid">
+      <div class="about-copy">
+        <div class="section-kicker">О компании</div>
+        <h2>Помогаем информации работать эффективно</h2>
+        <p>ООО «БелКейс» специализируется на модификации и сопровождении баз данных, а также на обработке поступающих голосовых и текстовых обращений.</p>
+        <p>В основе нашей работы — внимательность к деталям, корректная обработка информации и качественное взаимодействие с клиентами.</p>
+      </div>
+      <div class="feature-list">
+        <article class="feature">
+          <div class="feature-icon">DB</div>
+          <h3>Базы данных</h3>
+          <p>Модификация и работа с информационными данными.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon">☎</div>
+          <h3>Голосовые заявки</h3>
+          <p>Приём и обработка входящих обращений.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon">TXT</div>
+          <h3>Текстовые заявки</h3>
+          <p>Работа с сообщениями и поступающей информацией.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon">✓</div>
+          <h3>Качество</h3>
+          <p>Внимательное отношение к каждой заявке.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="vacancies" id="vacancies">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-kicker">Карьера в БелКейс</div>
+        <h2>Актуальные вакансии</h2>
+        <p>Рассматриваем кандидатов без опыта. Работа удалённая, с официальным оформлением.</p>
+      </div>
+
+      <div class="vacancy-list">
+        <article class="vacancy">
+          <div class="vacancy-main">
+            <div class="vacancy-top">
+              <h3>Оператор ЭВМ</h3>
+              <span class="tag">Можно удалённо</span>
+            </div>
+            <div class="salary-row">
+              <span class="salary">950–1 350 BYN</span>
+              <span class="salary-note">на руки в месяц</span>
+            </div>
+            <div class="vacancy-cols">
+              <div>
+                <h4>Обязанности</h4>
+                <ul><li>Приём и обработка входящих заказов.</li></ul>
+              </div>
+              <div>
+                <h4>Требования</h4>
+                <ul>
+                  <li>Уверенное владение компьютером.</li>
+                  <li>Наличие компьютера или ноутбука и гарнитуры.</li>
+                  <li>Отсутствие дефектов речи, стрессоустойчивость.</li>
+                  <li>Русский язык — продвинутый уровень (C1).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="vacancy-meta">
+              <span>Полная занятость</span><span>Полный рабочий день</span><span>Без опыта</span>
+            </div>
+          </div>
+          <div class="vacancy-aside">
+            <button class="btn apply-btn" type="button">Откликнуться</button>
+          </div>
+        </article>
+
+        <article class="vacancy">
+          <div class="vacancy-main">
+            <div class="vacancy-top">
+              <h3>Специалист по работе с клиентами</h3>
+              <span class="tag">Можно удалённо</span>
+            </div>
+            <div class="salary-row">
+              <span class="salary">950–1 350 BYN</span>
+              <span class="salary-note">на руки в месяц</span>
+            </div>
+            <div class="vacancy-cols">
+              <div>
+                <h4>Обязанности</h4>
+                <ul><li>Приём и обработка входящих заказов и обращений.</li></ul>
+              </div>
+              <div>
+                <h4>Требования</h4>
+                <ul>
+                  <li>Уверенное владение компьютером.</li>
+                  <li>Наличие компьютера или ноутбука и гарнитуры.</li>
+                  <li>Отсутствие дефектов речи, стрессоустойчивость.</li>
+                  <li>Русский язык — продвинутый уровень (C1).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="vacancy-meta">
+              <span>Полная занятость</span><span>Полный рабочий день</span><span>Без опыта</span>
+            </div>
+          </div>
+          <div class="vacancy-aside">
+            <button class="btn apply-btn" type="button">Откликнуться</button>
+          </div>
+        </article>
+
+        <article class="vacancy">
+          <div class="vacancy-main">
+            <div class="vacancy-top">
+              <h3>Специалист по работе с клиентами</h3>
+              <span class="tag">Можно удалённо</span>
+            </div>
+            <div class="salary-row">
+              <span class="salary">850–1 400 BYN</span>
+              <span class="salary-note">в месяц</span>
+            </div>
+            <div class="vacancy-cols">
+              <div>
+                <h4>Обязанности</h4>
+                <ul>
+                  <li>Приём и обработка заказов сервиса заказов авто.</li>
+                  <li>Приём и обработка входящих звонков.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Требования</h4>
+                <ul>
+                  <li>Среднее образование.</li>
+                  <li>Опыт работы не требуется.</li>
+                  <li>Студентов дневной формы обучения не рассматриваем.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="vacancy-meta">
+              <span>Витебск</span><span>Удалённо</span><span>Полная занятость</span><span>Без опыта</span><span>5/2</span>
+            </div>
+          </div>
+          <div class="vacancy-aside">
+            <button class="btn apply-btn" type="button">Откликнуться</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contacts">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-kicker">Контакты</div>
+        <h2>Будем рады вашему обращению</h2>
+        <p>Свяжитесь с нами по телефону или посетите офис компании.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-panel">
+          <h3>Есть вопросы или хотите откликнуться?</h3>
+          <p>Позвоните нам — расскажем подробнее о компании и открытых вакансиях.</p>
+          <a class="btn" href="tel:+375297704363">+375 29 770-43-63</a>
+        </div>
+        <div class="details">
+          <div class="detail">
+            <div class="detail-icon">⌖</div>
+            <div><strong>Юридический адрес / офис</strong><span>Республика Беларусь, г. Витебск, ул. Максима Горького, 43, 2-й этаж, офис «БелКейс»</span></div>
+          </div>
+          <div class="detail">
+            <div class="detail-icon">☎</div>
+            <div><strong>Телефон</strong><a href="tel:+375297704363">+375 29 770-43-63</a></div>
+          </div>
+          <div class="detail">
+            <div class="detail-icon">№</div>
+            <div><strong>УНП</strong><span>391831891</span></div>
+          </div>
+          <div class="detail">
+            <div class="detail-icon">⌂</div>
+            <div><strong>Организация</strong><span>Общество с ограниченной ответственностью «БелКейс»</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="applyModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-x" type="button" id="modalX" aria-label="Закрыть">×</button>
+      <div class="modal-mark">✓</div>
+      <h2 id="modalTitle">Спасибо за интерес к вакансии!</h2>
+      <p>Свяжитесь с нами по телефону, чтобы обсудить вакансию и договориться о прохождении собеседования.</p>
+      <a class="modal-phone" href="tel:+375297704363">+375 29 770-43-63</a>
+      <div class="modal-actions">
+        <a class="btn modal-call" href="tel:+375297704363">Позвонить</a>
+        <button class="btn modal-close" type="button" id="modalClose">Закрыть</button>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <span>© <span id="year">2026</span> ООО «БелКейс». Все права защищены.</span>
+    <span><strong>УНП:</strong> 391831891</span>
+  </div>
+</footer>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const applyModal = document.getElementById('applyModal');
+  const openModal = () => {
+    applyModal.classList.add('is-open');
+    applyModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    document.getElementById('modalClose').focus();
+  };
+  const closeModal = () => {
+    applyModal.classList.remove('is-open');
+    applyModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+  };
+
+  document.querySelectorAll('.apply-btn').forEach(button => {
+    button.addEventListener('click', openModal);
+  });
+  document.getElementById('modalX').addEventListener('click', closeModal);
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  applyModal.addEventListener('click', event => {
+    if (event.target === applyModal) closeModal();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && applyModal.classList.contains('is-open')) closeModal();
+  });
+</script>
+</body>
+</html>
